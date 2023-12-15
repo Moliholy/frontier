@@ -294,6 +294,19 @@ pub mod pallet {
 
 			Self::apply_validated_transaction(source, transaction).map(|(post_info, _)| post_info)
 		}
+
+		/// Force-sets the pending transactions.
+		/// This is a root-only operation
+		#[pallet::call_index(1)]
+		#[pallet::weight({0})]
+		pub fn force_set_pending(
+			origin: OriginFor<T>,
+			pending: Vec<(Transaction, TransactionStatus, Receipt)>,
+		) -> DispatchResult {
+			ensure_root(origin)?;
+			Pending::<T>::set(pending);
+			Ok(())
+		}
 	}
 
 	#[pallet::event]
